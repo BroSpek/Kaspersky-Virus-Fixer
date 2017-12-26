@@ -38,7 +38,7 @@ echo. Press [X] to exit.
 echo.
 choice /c uspx /n /m " Choose: " 
 if %errorlevel%==4 exit
-if %errorlevel%==3 start https://github.com/BroSpek/Kaspersky-Virus-Fixer/releases
+if %errorlevel%==3 start https://github.com/BroSpek/Kaspersky-Virus-Fixer/releases/latest
 if %errorlevel%==2 call :clean_sys
 if %errorlevel%==1 call :clean_usb
 goto choose
