@@ -9,7 +9,7 @@ title %title%
 
 ::########### SCRIPT GLOBAL VARIABLES #############::
 set kis=kaspersky internet security 2017
-set kis_bat="* (Protected by Kaspersky Internet Security 2017).bat"
+set kis_bat="*Kaspersky Internet Security 2017).bat"
 set usr_start=%appdata%\Microsoft\Windows\Start Menu\Programs\Startup
 set sys_start=%programdata%\Microsoft\Windows\Start Menu\Programs\Startup
 set er1=A&set er2=B&set er3=C&set er4=D&set er5=E&set er6=F&set er7=G&set er8=H&set er9=I&set er10=J&set er11=K&set er12=L&set er13=M&set er14=N&set er15=O&set er16=P&set er17=Q&set er18=R&set er19=S&set er20=T&set er21=U&set er22=V&set er23=W&set er24=X&set er25=Y&set er26=Z
@@ -69,7 +69,7 @@ set svi=%root%:\system volume information
 set msg=INFO: USB drive %root%: selected.
 call :header
 cd /d %root%:\
-if exist %kis_bat% del %kis_bat%
+if exist %kis_bat% del /f %kis_bat%
 cd /d "%svi%"
 dir /A /B "%svi%" | findstr .*>NUL && attrib -h -s /d
 if exist "%kis%" rd /s /q "%kis%" 2>NUL
