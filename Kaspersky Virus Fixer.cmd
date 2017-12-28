@@ -1,10 +1,10 @@
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::                                                       ::
-::  Kaspersky Virus Fixer v1.1 by Abd Halim @ Angah ICT  ::
+::  Kaspersky Virus Fixer v1.2 by Abd Halim @ Angah ICT  ::
 ::                                                       ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @echo off
-set title=Kaspersky Virus Fixer v1.1
+set title=Kaspersky Virus Fixer v1.2
 title %title%
 
 ::########### SCRIPT GLOBAL VARIABLES #############::
@@ -32,14 +32,16 @@ set msg=Choose an option:
 call :header
 echo.
 echo. Press [U] to fix USB drive.
+echo. Press [C] to convert USB drive File System into NTFS.
 echo. Press [S] to fix system.
 echo. Press [P] to check for update.
 echo. Press [X] to exit.
 echo.
-choice /c uspx /n /m " Choose: " 
-if %errorlevel%==4 exit
-if %errorlevel%==3 start https://github.com/BroSpek/Kaspersky-Virus-Fixer/releases/latest
-if %errorlevel%==2 call :clean_sys
+choice /c ucspx /n /m " Choose: " 
+if %errorlevel%==5 exit
+if %errorlevel%==4 start https://github.com/BroSpek/Kaspersky-Virus-Fixer/releases/latest
+if %errorlevel%==3 call :clean_sys
+if %errorlevel%==2 call :convert_fs
 if %errorlevel%==1 call :clean_usb
 goto choose
 exit /b %errorlevel%
@@ -65,6 +67,7 @@ if exist "%root%:\" (
 	set msg=ERROR: Drive letter %root%: is currently unused.
 	goto clean_usb
 )
+:: fixing...
 set svi=%root%:\system volume information
 set msg=INFO: USB drive %root%: selected.
 call :header
@@ -81,6 +84,48 @@ dir /A /B "%svi%" | findstr .*>NUL && move "%svi%\*.*" "%root%:\"
 echo.
 echo. RESULT: Done. Please check drive %root%: content.
 endlocal
+::------
+call :final
+goto choose
+exit /b %errorlevel%
+
+:convert_fs
+call :header
+echo.
+echo. Detected USB drive(s):
+setlocal
+for /f "usebackq skip=1 tokens=*" %%i in (`wmic logicaldisk where drivetype^=2 get deviceid^, volumename^, filesystem`) do echo: %%i
+endlocal
+::------
+setlocal enableDelayedExpansion
+echo.
+echo. WARNING: Please backup your files before doing this.
+echo.
+choice /c ABCDEFGHIJKLMNOPQRSTUVWXYZ /n /m "Choose a USB drive to convert or press A to return: "
+set root=!er%errorlevel%!
+if %root% equ A goto choose
+if %root% lss D set msg=ERROR: Drive letter must be between D and Z. && goto convert_fs
+if %root% gtr Z set msg=ERROR: Drive letter must be between D and Z. && goto convert_fs
+if exist "%root%:\" (
+	echo.
+) else (
+	set msg=ERROR: Drive letter %root%: is currently unused.
+	goto convert_fs
+)
+:: converting...
+wmic logicaldisk where caption="%root%:" get filesystem|find "NTFS">nul && set ntfs=y || set ntfs=n
+if %ntfs%==y set msg=ERROR: Drive %root%: is already in NTFS format. && goto convert_fs
+cls
+echo.
+echo. This may take a while. Please be patient.
+echo.
+set/p<nul =1. Checking and fixing file system...&chkdsk %root%: /f /x>nul
+echo.
+echo.
+set/p<nul =2. Converting file system...&convert %root%: /fs:ntfs>nul
+wmic logicaldisk where caption="%root%:" get filesystem|find "NTFS">nul && set ntfs=y || set ntfs=n
+if %ntfs%==y (echo. Done.) else (echo. Ooops. Conversion failed, please try again.)
+echo.
 ::------
 call :final
 goto choose
