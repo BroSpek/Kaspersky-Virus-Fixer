@@ -4,7 +4,6 @@
 ::                                                         ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @ECHO off
-COLOR 09
 SET title=KASPERSKY VIRUS FIXER v1.3.1
 TITLE %title%
 
@@ -73,8 +72,8 @@ SETLOCAL enableDelayedExpansion
 	:: fixing...
 	SET svi=%root%:\system volume information
 	SET msg=INFO: USB drive %root%: selected.
-	CALL :check_ntfs
-	IF %ntfs%==y set msg=ERROR: I cannot process NTFS drive. Sorry. && GOTO clean_usb
+	::CALL :check_ntfs
+	::IF %ntfs%==y set msg=ERROR: I cannot process NTFS drive. Sorry. && GOTO clean_usb
 	CALL :header
 	CD /d %root%:\
 	IF EXIST %kis_bat% DEL /f %kis_bat%
