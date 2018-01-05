@@ -1,10 +1,10 @@
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 ::                                                         ::
-::  Kaspersky Virus Fixer v1.3.1 by Abd Halim @ Angah ICT  ::
+::  Kaspersky Virus Fixer v1.4 by Abd Halim @ Angah ICT  ::
 ::                                                         ::
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 @ECHO off
-SET title=KASPERSKY VIRUS FIXER v1.3.1
+SET title=KASPERSKY VIRUS FIXER v1.4
 TITLE %title%
 
 :: invoke admin
@@ -130,9 +130,8 @@ SET subtitle=[ FIX SYSTEM ]
 CALL :header
 IF EXIST "%APPDATA%\%kis%" (
 	CD /d "%APPDATA%"
+	CALL :killtask "spoolsvc.exe"
 	CALL :killtask "explorers.exe"
-	CALL :killtask "spoolsvc.exe"
-	CALL :killtask "spoolsvc.exe"
 	RD /s /q "%kis%"
 	CD /d "%usr_start%"
 	CALL :shortcut
@@ -163,8 +162,8 @@ WMIC logicaldisk WHERE caption="%root%:" GET filesystem | FIND "NTFS">NUL && SET
 EXIT /b %ERRORLEVEL%
 
 :killtask
-TASKLIST /fi "imagename eq %*" 2>NUL | FIND /i /n "%*" >NUL 2>NUL
-IF "%ERRORLEVEL%"=="0" taskkill /f /im %*
+::TASKLIST /fi "imagename eq %*" 2>NUL | FIND /i /n "%*" >NUL 2>NUL
+taskkill /f /im %*
 EXIT /b %ERRORLEVEL%
 
 :shortcut
